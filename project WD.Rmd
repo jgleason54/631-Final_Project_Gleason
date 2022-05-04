@@ -10,20 +10,6 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 
-```{r cars}
-summary(cars)
-```
-
-## Including Plots
-
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
-
 # Intro 
 ## What: 
 I would like to look through and examine PGA Tour stats from 2019 to 2015 to shed light on what area of the game effective the player score and world rankings the most. 
