@@ -12,28 +12,31 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Intro 
 ## What: 
-I would like to look through and examine PGA Tour stats from 2019 to 2015 to shed light on what area of the game effective the player score and world rankings the most. 
+For my project I examined a  PGA Tour dataset that contained players stats from 2019 to 2015. I am using this data to shed light on what area of the game effective the player score the most. I want to see what area of the game, Tee shots, irons shots or putting, separate the elite golfers from the rest of the pack.  
 
 ## Why:
 A new approach to the game of golf on the PGA tour has caught some momentum in the last few years. Historically, the thought was to score well on tour players must be extremely efficient on the putting green. In today game, there are a hand full of players that are beginning to focus more on driving distance than putting efficiency. I want to dig deeper into which approach is backed by the numbers.
 
 ## How:
-I am going to pull 5 years of data from pgatour.com site for the top 100 players in the world. I am going to be looking Driving Distance, Green in Regulation and putting strokes per round.
+I have pulled 5 years of data from pgatour.com site for the top 200 players in the world. I modified the dataset to contain categories that fit the scope of the project and reduced the years of data from 5 to 1 create a smaller sample size. After pulling and modifying the data I will begin exploring the data. I will create a histogram for all the variables to show the normal distribution. Then I will find the  correlation between the explanatory and response variables.  Finally, I will create a regression model using Scoring Average as my response variable and Driving Distance, Greens In Regulation (GIR) and Average Putts Per Round as my explanatory variables. This model will hopefully show me what explanatory variable has the greatest and least effect on the response variable. 
 
 # Body 
+## Audience Knowledge:
+The dataset that will be used to determine what area of the golf game effect the score the most will contain 2019 PGA player data. The dataset has column contain Players Name, Driving Distance, Putts Per Round, FedEx Cup Points, Greens In Regulation (GIR) and Scoring Average. Driving Distance measures the average length the golf ball goes off the tee. GIR is the percentage the player is able to hit the green in regulation, meaning if the hole is a par 4 they reach the green on their second shot. Average Putts Per Round is how many time the player hits the ball when it is on the green over a 18 hole period. 
 # Topics From Class 
 
-## Topic 1:
-Installing and Cleaning of Data
 ```{r}
 library(readxl)
 library(tidyverse)
 library(stringr)
 ```
 
-
 ```{r}
 pgafulldata_1_copy <- read_excel("~/Desktop/pgafulldata (1) copy.xlsx")
+```
+
+```{r}
+head(pgafulldata_1_copy)
 ```
 
 ```{r}
@@ -51,88 +54,69 @@ pga_data_2$PLAYER.NAME <- str_sub(pga_data_2$'PLAYER NAME',0 ,-7)
 
 ```
 
+```{r}
+PGA <- pga_data_2[-c(1,3,6,8,9)]
+```
 
 ```{r}
-PGA <- pga_data_2[-c(1,3,6,8,9,10,11)]
+PGA2019 <- PGA%>% top_n(177, Year.Date)
+```
+
+
+```{r}
+head(PGA2019)
+```
+
+```{r}
+ggplot(PGA2019) + geom_histogram(aes(x=DrivingDistance), binwidth = 1)
+```
+
+
+```{r}
+ggplot(PGA2019) + geom_histogram(aes(x=GIR), binwidth = 1)
+```
+
+
+```{r}
+ggplot(PGA2019) + geom_histogram(aes(x=PuttsPerRound))
+```
+
+
+```{r}
+plot(ScoringAverage ~ PuttsPerRound + GIR + DrivingDistance, data = PGA2019)
+```
+
+
+```{r}
+cor(PGA2019$ScoringAverage, PGA2019$GIR)
+```
+
+
+```{r}
+cor(PGA2019$ScoringAverage, PGA2019$DrivingDistance)
+```
+
+
+```{r}
+cor(PGA2019$ScoringAverage, PGA2019$PuttsPerRound)
 ```
 
 
 
 
-## Topic 2:
-Understanding the histograms of the variable and if their is linear regression 
 ```{r}
-summary(PGA)
+mode19<- lm(ScoringAverage ~PuttsPerRound + GIR+ DrivingDistance, data = PGA2019)
 ```
 
 ```{r}
-ggplot(PGA) + geom_histogram(aes(x=DrivingDistance), binwidth = 1)
-```
-
-
-```{r}
-ggplot(PGA) + geom_histogram(aes(x=GIR), binwidth = 1)
+summary(mode19)
 ```
 
 
 ```{r}
-ggplot(PGA) + geom_histogram(aes(x=PuttsPerRound))
+plot(mode19)
 ```
 
-
-```{r}
-plot(FedexCupPoints ~ PuttsPerRound + GIR + DrivingDistance, data = PGA)
-```
-
-
-
-## Topic 3: 
-Filtering and using Mean to Compare 
-```{r}
-Q3 <- PGA %>% filter(FedexCupPoints > 833)
-```
-
-
-```{r}
-Q1 <- PGA %>% filter(FedexCupPoints < 323)
-```
-
-
-```{r}
-summary(Q3)
-```
-
-
-```{r}
-summary(Q1)
-```
-
-
-```{r}
-DDPC<- ((297.4-289.4)/289.4)*100
-```
-
-```{r}
-DDPC
-```
-
-
-```{r}
-PPRPC <-((28.94 - 29.22)/29.22)*100
-```
-
-```{r}
-PPRPC
-```
-
-
-```{r}
-GIRPC <- ((78.51 - 75.51)/ 75.51)*100
-```
-
-```{r}
-GIRPC
-```
 
 
 # Conclusion
