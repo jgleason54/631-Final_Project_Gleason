@@ -23,7 +23,10 @@ I have pulled 5 years of data from pgatour.com site for the top 200 players in t
 # Body 
 ## Audience Knowledge:
 The dataset that will be used to determine what area of the golf game effect the score the most will contain 2019 PGA player data. The dataset has column contain Players Name, Driving Distance, Putts Per Round, FedEx Cup Points, Greens In Regulation (GIR) and Scoring Average. Driving Distance measures the average length the golf ball goes off the tee. GIR is the percentage the player is able to hit the green in regulation, meaning if the hole is a par 4 they reach the green on their second shot. Average Putts Per Round is how many time the player hits the ball when it is on the green over a 18 hole period. 
-# Topics From Class 
+
+## Specific Topic:
+I have chosen this as my response variable to be Scoring Average as the Fed Ex Cup Point System can be skewed because different tournament award different amount of points. I am using Driving Distance, GIR and Putts Per Round as the explanatory variable and categorize them as Driving distance = Long Game, GIR = Mid Game, Putt per Round = Short Game
+
 
 ```{r}
 library(readxl)
@@ -38,6 +41,8 @@ pgafulldata_1_copy <- read_excel("~/Desktop/pgafulldata (1) copy.xlsx")
 ```{r}
 head(pgafulldata_1_copy)
 ```
+## Step 1:Clean Data 
+The first step in my project is to clean my data set. To do this I must remove all the columns with null values, separate column 1 into 2 different columns (Player Name and Year), remove the columns that I do not need for this project and finally filtering on just 2019 data. 
 
 ```{r}
 pga_data_2 <- pgafulldata_1_copy %>% na.omit()
@@ -66,9 +71,14 @@ PGA2019 <- PGA%>% top_n(177, Year.Date)
 ```{r}
 head(PGA2019)
 ```
+## Step 1 Continued: 
+As you can see below I have cleaned me data set and I am now ready to create my model
+
+## Step 2: Normal Distrubtion 
+Next, I will be testing for normal distribution between my explanatory variables.  By creating a histogram for each explanatory variable it will give me an idea of the data distribution that I will be dealing with
 
 ```{r}
-ggplot(PGA2019) + geom_histogram(aes(x=DrivingDistance), binwidth = 1)
+ggplot(PGA2019) + geom_histogram(aes(x=DrivingDistance), binwidth = 4)
 ```
 
 
@@ -78,9 +88,14 @@ ggplot(PGA2019) + geom_histogram(aes(x=GIR), binwidth = 1)
 
 
 ```{r}
-ggplot(PGA2019) + geom_histogram(aes(x=PuttsPerRound))
+ggplot(PGA2019) + geom_histogram(aes(x=PuttsPerRound), binwidth = .2)
 ```
 
+## Step 2 continued
+As see above, all three of my explanatory variables Driving Distance, GIR and Putting Per Round Average have a normal distribution.
+
+## Step 3: Correlation 
+Before creating my regression model, I must look at the correlation between each explanatory variable compared to the response variable. Below I have created a scatter play that will show me the strength of the correlation be each variable.
 
 ```{r}
 plot(ScoringAverage ~ PuttsPerRound + GIR + DrivingDistance, data = PGA2019)
@@ -101,7 +116,11 @@ cor(PGA2019$ScoringAverage, PGA2019$DrivingDistance)
 cor(PGA2019$ScoringAverage, PGA2019$PuttsPerRound)
 ```
 
+## Step 3 continued
+As seen above the rank of strength of correlation is Putts Per Round (40%), GIR (30%) and finally Driving Distance (29%). This rank will feed into the order I put the variables into my regression model. 
 
+## Step 4: Regression 
+I have created a regression model based on the correlation of the explanatory variable compared to my response variable. Variable order in the model is Putts per round + GIR + Driving distance to find out the scoring average of the player.
 
 
 ```{r}
@@ -117,6 +136,30 @@ summary(mode19)
 plot(mode19)
 ```
 
+## Step 4 continued
+The regression model shown above, 38.6% of the variability in scoring average is explained by putts per round, GIR and driving distance. The equation the model produced in yhat = 59.05 + .821* Putts per Round + -.104*GIR + -.013*DrivingDistance
 
+## Challeneges and Issue 
+I faced multiple issues and challenges during this project. First, there is no attribute that has a strong correlation to Scoring Average so it was difficult to dig through the data to find a relationship.  Plus, there was different response variables that I could have used like FedEx Cup Point and top ten finishes but I believe the scoring average was the best indicator on a players performance. Additionally, the data set I used had a ton of data point (over 1,000), I had to reduce the data points to produce a useful model. Reducing the data size could have be done a lot of different ways but I chose to solely look at 2019 data.
+
+## Contribution 
+I built out a regression model that can be used to predicted a PGA tour player average score based on average putts per round, GIR and driving distance. The data set I used was [Link](https://www.kaggle.com/datasets/jychoi87/pga-tour-top-200-player-data-20152019During) this process I found out that all three variables contribute to the player scoring average but to different degrees. Putts per round has the greatest effect on scoring average with GIR being second and driving distance third by a slim margin. 
+
+# Topics From Class 
+
+## 1) R Markdown 
+I completed this whole project in R Markdown. I had a little trouble with the formatting of the PDF and how to display the equation in an easy to look at format. I believe I could still use some work with R Markdown formatting but I was able to complete the project from start to finish using R Markdown
+
+## 2) GitHub 
+I had no exposure to Git before this as I had  to create an account for this class/project. I was able to create a connection to my Rstudio and have the GIT document automatically update. I still have a lot to learn about the ins and outs of GIT but this was a good first step in that process. 
+
+## 3) Cleansing Data 
+I cleaned the data in Rstudio which we learned in class. I uploaded the data as in which was in a messy format. I delete the null values, split one column into two columns, reduce the data size. Cleaning the data gave me the starting point I needed to begin the rest of my analysis.
+
+## 4) Graphs: histogram and scatter plot 
+I created a histogram to show me the normal distribution of each explanatory variable. This ensured that the data was I working with described the entire population. I also used a scatter plots that we learned in class to show the linear relationship between two variables (Explanatory to the Response) 
+
+## 5) Correlation and regression 
+From the scatter plots, I created a correlation function to give a numeric value to the relationship between each explanatory value to the response. I took this information and created an regression model based on the top correlated value to the least. Form their I found the equation to predict a scoring average based on the three explanatory variables
 
 # Conclusion
