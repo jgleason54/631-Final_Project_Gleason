@@ -32,6 +32,7 @@ I have chosen this as my response variable to be Scoring Average as the Fed Ex C
 library(readxl)
 library(tidyverse)
 library(stringr)
+library(rmarkdown)
 ```
 
 ```{r}
@@ -163,3 +164,6 @@ I created a histogram to show me the normal distribution of each explanatory var
 From the scatter plots, I created a correlation function to give a numeric value to the relationship between each explanatory value to the response. I took this information and created an regression model based on the top correlated value to the least. Form their I found the equation to predict a scoring average based on the three explanatory variables
 
 # Conclusion
+```{r}
+render("~/Desktop/project WD.Rmd", md_document(),output_file = "README.md")
+```
